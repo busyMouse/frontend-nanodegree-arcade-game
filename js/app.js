@@ -1,14 +1,37 @@
 /**
+* @description abstract class for all actors on the stage
+* @constructor
+* @param {intiger} x - horizontal position
+* @param {intiger} y - vertical position
+*/
+var Character = function(x,y){
+    this.x = x;
+    this.y = y;
+};
+
+/**
+* @description Draw the character on the screen
+*/
+Character.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
+/**
 * @description Enemies our player must avoid
 * @constructor
 * @param {intiger} row - number of the row where enemy moves
 */
 var Enemy = function(row) {
-    this.randomSpeed();
-    this.randomHorizontalStartPosition();
-    this.y = row * 83 - 20;
+    Character.call(this, this.randomHorizontalStartPosition(), row * 83 - 20);
+    this.speed = this.randomSpeed();
     this.sprite = 'images/enemy-bug.png';
 };
+
+/**
+* @description Enemy inherits from Character
+*/
+Enemy.prototype = Object.create(Character.prototype);
+Enemy.prototype.constructor = Enemy;
 
 /**
 * @description update the enemy's position
@@ -17,30 +40,25 @@ var Enemy = function(row) {
 Enemy.prototype.update = function(dt) {
     this.x += dt * this.speed;
     if(this.x >= 5*101){
-        this.randomHorizontalStartPosition();
-        this.randomSpeed();
+        this.x = this.randomHorizontalStartPosition();
+        this.speed = this.randomSpeed();
     }
 };
 
 /**
-* @description Draw the enemy on the screen
-*/
-Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-};
-
-/**
 * @description sets enemy bug speed to random
+* @return speed of enemy
 */
 Enemy.prototype.randomSpeed = function(){
-    this.speed = Math.floor(Math.random()*350+50);
+    return Math.floor(Math.random()*350+50);
 };
 
 /**
 * @description sets random horizontal position
+* @return x
 */
 Enemy.prototype.randomHorizontalStartPosition = function(){
-    this.x = -Math.floor(Math.random()*300+100);
+    return -Math.floor(Math.random()*300+100);
 };
 
 /**
