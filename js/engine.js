@@ -99,6 +99,30 @@ var Engine = (function(global) {
         player.update();
     }
 
+    /**
+    * @description checks if player collides with any enemy
+    */
+    function checkCollisions(){
+        for(var i = 0; i < allEnemies.length; i++){
+            var isCollisionX = (allEnemies[i].x+101 >= player.x+18) && (allEnemies[i].x <= player.x+84);
+            var isCollisionY =  (allEnemies[i].y+130 >= player.y+84) && (allEnemies[i].y+130 <= player.y+179);
+
+            if(isCollisionX && isCollisionY){
+                player.kill();
+            }
+        }
+    }
+
+    /**
+    * @description checks if player reached river
+    */
+    function checkWinConditions(){
+        if(player.row === 0){
+            player.reset();
+            player.win();
+        }
+    }
+
     /* This function initially draws the "game level", it will then call
      * the renderEntities function. Remember, this function is called every
      * game tick (or loop of the game engine) because that's how games work -

@@ -81,14 +81,14 @@ Player.prototype.constructor = Player;
 * @param {number} dt - a time delta between ticks
 */
 Player.prototype.update = function(dt) {
-    //no op
+    // no op
 };
 
 /**
 * @description handles player movement
 * @param {text} key - type of key user pressed on the keyboard
 */
- Player.prototype.handleInput = function(key) {
+Player.prototype.handleInput = function(key) {
     if(this.canMove){
         switch(key){
             case 'left':
@@ -109,7 +109,7 @@ Player.prototype.update = function(dt) {
                 break;
         }
     }
- };
+};
 
 /**
 * @description reset player position and image to default
@@ -175,28 +175,3 @@ document.addEventListener('keyup', function(e) {
     };
     player.handleInput(allowedKeys[e.keyCode]);
 });
-
-/**
-* @description checks if player collides with any enemy
-*/
-function checkCollisions(){
-    for(var i = 0; i < allEnemies.length; i++){
-        var isCollisionX = (allEnemies[i].x+101 >= player.x+18) && (allEnemies[i].x <= player.x+84);
-        var isCollisionY =  (allEnemies[i].y+130 >= player.y+84) && (allEnemies[i].y+130 <= player.y+179);
-
-        if(isCollisionX && isCollisionY){
-            player.kill();
-        }
-    }
-}
-
-/**
-* @description checks if player reached river
-*/
-function checkWinConditions(){
-    if(player.row === 0){
-        player.reset();
-        player.win();
-    }
-}
-
