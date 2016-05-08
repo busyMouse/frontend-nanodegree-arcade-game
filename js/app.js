@@ -1,39 +1,150 @@
-// Enemies our player must avoid
-var Enemy = function() {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
-
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
+/**
+* @description Enemies our player must avoid
+* @constructor
+* @param {intiger} row - number of the row where enemy moves
+*/
+var Enemy = function(row) {
+    this.randomSpeed();
+    this.randomHorizontalStartPosition();
+    this.y = row * 83 - 20;
     this.sprite = 'images/enemy-bug.png';
 };
 
-// Update the enemy's position, required method for game
-// Parameter: dt, a time delta between ticks
+/**
+* @description update the enemy's position
+* @param {number} dt - a time delta between ticks
+*/
 Enemy.prototype.update = function(dt) {
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
+    this.x += dt * this.speed;
+    if(this.x >= 5*101){
+        this.randomHorizontalStartPosition();
+        this.randomSpeed();
+    }
 };
 
-// Draw the enemy on the screen, required method for game
+/**
+* @description Draw the enemy on the screen
+*/
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
+/**
+* @description sets enemy bug speed to random
+*/
+Enemy.prototype.randomSpeed = function(){
+    this.speed = Math.floor(Math.random()*350+50);
+};
 
+/**
+* @description sets random horizontal position
+*/
+Enemy.prototype.randomHorizontalStartPosition = function(){
+    this.x = -Math.floor(Math.random()*300+100);
+};
 
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
+/**
+* @description create player
+* @constructor
+*/
+var Player = function() {
+    this.x = 2;
+    this.y = 5;
+    this.sprite = 'images/char-cat-girl.png';
+    this.canMove = true;
+};
 
+/**
+* @description update player
+* @param {number} dt - a time delta between ticks
+*/
+Player.prototype.update = function(dt) {
+ //nothing to do here
+};
 
+/**
+* @description draws player on the board
+*/
+Player.prototype.render = function() {
+     ctx.drawImage(Resources.get(this.sprite), this.x * 101, this.y * 83-20);
+ };
 
-// This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
+/**
+* @description handles player movement
+* @param {text} key - type of key user pressed on the keyboard
+*/
+ Player.prototype.handleInput = function(key) {
+    if(this.canMove){
+        switch(key){
+            case 'left':
+                this.x = Math.max(--this.x,0);
+                break;
+            case 'up':
+                this.y = Math.max(--this.y,0);
+                break;
+            case 'right':
+                this.x = Math.min(++this.x,4);
+                break;
+            case 'down':
+                this.y = Math.min(++this.y,5);
+                break;
+        }
+    }
+ };
+
+/**
+* @description reset player position and image to default
+*/
+Player.prototype.reset = function(){
+    this.sprite = 'images/char-cat-girl.png';
+    this.x = 2;
+    this.y = 5;
+    this.canMove = true;
+};
+
+/**
+* @description change image of the player, block movement and reset player after timeout. Since setTimeout uses global context we need to bind 'this' to player instance.
+*/
+Player.prototype.kill = function(){
+    this.canMove = false;
+    this.sprite = 'images/char-cat-dead-girl.png';
+    setTimeout(this.reset.bind(this), 500);
+};
+
+/**
+* @description change image of the player, block movement and reset player after timeout. Since setTimeout uses global context we need to bind 'this' to player instance.
+*/
+Player.prototype.win = function(){
+    this.canMove = false;
+    this.sprite = 'images/char-cat-girl-win.png';
+    setTimeout(this.reset.bind(this), 500);
+};
+
+var allEnemies = createEnemies();
+
+/**
+* @description creates enemies array
+* @returns {array} array of enemies
+*/
+function createEnemies(){
+    var enemies = [];
+    enemies.push(new Enemy(3));
+    enemies.push(new Enemy(3));
+
+    enemies.push(new Enemy(2));
+    enemies.push(new Enemy(2));
+    enemies.push(new Enemy(2));
+
+    enemies.push(new Enemy(1));
+    enemies.push(new Enemy(1));
+    return enemies;
+}
+
+var player = new Player();
+
+/**
+* @description listenes to user keyboard events
+*/
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
         37: 'left',
@@ -41,6 +152,31 @@ document.addEventListener('keyup', function(e) {
         39: 'right',
         40: 'down'
     };
-
     player.handleInput(allowedKeys[e.keyCode]);
 });
+
+/**
+* @description checks if player collides with any enemy
+*/
+function checkCollisions(){
+    for(var i = 0; i < allEnemies.length; i++){
+        var isCollisionX = (allEnemies[i].x+101 >= player.x * 101+18) && (allEnemies[i].x <= player.x*101+84);
+        var isCollisionY =  (allEnemies[i].y+130 >= player.y*83+64) && (allEnemies[i].y+130 <= player.y*83+159);
+
+        if(isCollisionX && isCollisionY){
+            player.kill();
+        }
+    }
+}
+
+/**
+* @description checks if player reached river
+*/
+function checkWinConditions(){
+    if(player.y === 0){
+        player.x = 2;
+        player.y = 5;
+        player.win();
+    }
+}
+

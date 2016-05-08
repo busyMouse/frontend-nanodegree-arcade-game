@@ -1,6 +1,15 @@
-frontend-nanodegree-arcade-game
+HOW TO RUN APPLICATION
 ===============================
 
-Students should use this [rubric](https://www.udacity.com/course/viewer/#!/c-nd001/l-2696458597/m-2687128535) for self-checking their submission.
+1.OPEN INDEX.HTML IN CHROME
+2.SEE STEPS TO WIN BELOW.
+3.ENJOY :)
 
-For detailed instructions on how to get started, check out this [guide](https://docs.google.com/document/d/1v01aScPjSWCCWQLIpFqvg3-vXLH2e8_SZQKC8jNO0Dc/pub?embedded=true).
+
+STEPS TO WIN
+===============================
+
+1.USE ARROWS TO NAVIGATE CAT GIRL.
+2.WATCH OUT FOR THE ENEMIES.
+3.REACH THE RIVER TO WIN.
+
