@@ -66,26 +66,23 @@ Enemy.prototype.randomHorizontalStartPosition = function(){
 * @constructor
 */
 var Player = function() {
-    this.x = 2;
-    this.y = 5;
-    this.sprite = 'images/char-cat-girl.png';
-    this.canMove = true;
+    Character.call(this, 0, 0);
+    this.reset();
 };
+
+/**
+* @description Player inherits from Character
+*/
+Player.prototype = Object.create(Character.prototype);
+Player.prototype.constructor = Player;
 
 /**
 * @description update player
 * @param {number} dt - a time delta between ticks
 */
 Player.prototype.update = function(dt) {
- //nothing to do here
+    //no op
 };
-
-/**
-* @description draws player on the board
-*/
-Player.prototype.render = function() {
-     ctx.drawImage(Resources.get(this.sprite), this.x * 101, this.y * 83-20);
- };
 
 /**
 * @description handles player movement
@@ -95,16 +92,20 @@ Player.prototype.render = function() {
     if(this.canMove){
         switch(key){
             case 'left':
-                this.x = Math.max(--this.x,0);
+                this.col = Math.max(--this.col,0);
+                this.x = this.col  * 101;
                 break;
             case 'up':
-                this.y = Math.max(--this.y,0);
+                this.row = Math.max(--this.row,0);
+                this.y = this.row * 83-20;
                 break;
             case 'right':
-                this.x = Math.min(++this.x,4);
+                this.col = Math.min(++this.col,4);
+                this.x = this.col  * 101;
                 break;
             case 'down':
-                this.y = Math.min(++this.y,5);
+                this.row = Math.min(++this.row,5);
+                this.y = this.row * 83-20;
                 break;
         }
     }
@@ -115,8 +116,10 @@ Player.prototype.render = function() {
 */
 Player.prototype.reset = function(){
     this.sprite = 'images/char-cat-girl.png';
-    this.x = 2;
-    this.y = 5;
+    this.col = 2;
+    this.x = this.col  * 101;
+    this.row = 5;
+    this.y = this.row * 83-20;
     this.canMove = true;
 };
 
@@ -178,8 +181,8 @@ document.addEventListener('keyup', function(e) {
 */
 function checkCollisions(){
     for(var i = 0; i < allEnemies.length; i++){
-        var isCollisionX = (allEnemies[i].x+101 >= player.x * 101+18) && (allEnemies[i].x <= player.x*101+84);
-        var isCollisionY =  (allEnemies[i].y+130 >= player.y*83+64) && (allEnemies[i].y+130 <= player.y*83+159);
+        var isCollisionX = (allEnemies[i].x+101 >= player.x+18) && (allEnemies[i].x <= player.x+84);
+        var isCollisionY =  (allEnemies[i].y+130 >= player.y+84) && (allEnemies[i].y+130 <= player.y+179);
 
         if(isCollisionX && isCollisionY){
             player.kill();
@@ -191,9 +194,8 @@ function checkCollisions(){
 * @description checks if player reached river
 */
 function checkWinConditions(){
-    if(player.y === 0){
-        player.x = 2;
-        player.y = 5;
+    if(player.row === 0){
+        player.reset();
         player.win();
     }
 }
