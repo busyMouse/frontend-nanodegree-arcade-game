@@ -1,3 +1,5 @@
+![alt tag](https://raw.githubusercontent.com/busyMouse/frontend-nanodegree-arcade-game/master/readme_img/arcade.gif)
+
 HOW TO RUN APPLICATION
 ===============================
 
